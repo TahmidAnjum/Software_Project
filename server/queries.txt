@@ -1,0 +1,30 @@
+
+///////
+students under a course...
+(async () => {
+        const tab =  await Course.findAll({
+          include :{
+            model : Student,
+            required : true
+          },
+          where :{
+            title : 'CSE101',
+            year : 2017
+          }
+        });
+        //console.log(JSON.stringify(tab, null, 2))
+        let str = "";
+        for(t of tab)
+        {
+          for (crs of t.Students)
+          {
+            //str+=JSON.stringify(crs.title+" : "+ crs.name , null, 2);
+            str+=crs.student_id+" : "+ crs.name
+            str+="<br><br><br>"
+          }
+        }
+        //str+=JSON.stringify(tab, null, 2);
+        res.send('<p>'+str+'</p>')
+        //console.log()
+        // Code here
+      })();
