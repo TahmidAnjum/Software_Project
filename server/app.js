@@ -115,6 +115,140 @@ app.get('/', (req,res)=>{
 });
 
 
+app.post('/rejadd',(req,res)=>{
+  (async () => {
+    const tab =  await Topic.update({status : -2},{
+      where :
+      {
+        uid : req.body.uid
+      }      
+    });
+      //console.log(JSON.stringify(tab, null, 2))
+    //const tab = [];
+    //for(let i=0;i<req.body.cos.length;i++)
+    //{
+      //parseInt(req.body.pos[i]);
+      (async()=>{
+        const abc = await Topic_CO.findAll({
+          where:{
+            TopicUid : req.body.uid,
+            status : 0
+          }
+        });
+        (async()=>{
+          const antin =  await Topic_Course.update({status : -2},
+            {
+              where :{
+                TopicUid : req.body.uid,
+              }
+            });
+        })().catch(e=>console.log(e));
+        for(let i=0;i<abc.length;i++)
+        {
+          (async()=>{
+            const ta =  await Topic_CO.update({status : -2},
+            {where:
+              {
+                TopicUid : req.body.uid,
+                COUid : abc[i].COUid,
+                status : 0
+              }
+            });
+            
+            
+            (async()=>{
+              const antinopole =  await CO_Course.update({ status : -2},
+                {
+                  where :{
+                    COUid : abc[i].COUid,
+                    status : 0
+                  }
+                });
+            })().catch(e=>console.log(e)); 
+            (async()=>{
+              const antinop =  await CO_PO.update({ flag : -2},
+                {
+                  where :{
+                    COUid : abc[i].COUid,
+                    flag : 0
+                  }
+                });
+            })().catch(e=>console.log(e)); 
+          })().catch(e=>console.log(e));
+        }
+        
+      })().catch(e=>console.log(e));;
+    //}
+      
+    res.send(tab)
+  })().catch(e=>console.log(e));
+});
+
+
+app.post('/appdel',(req,res)=>{
+  (async () => {
+    const tab =  await Topic.update({status : -2},{
+      where :{
+        uid : req.body.uid
+      }
+    });
+    res.send(tab);
+  })().catch(e=>console.log(e))
+  
+  /*(async()=>{
+    const tab = await Topic_Course.destroy({
+      where:{
+        TopicUid : req.body.topic.uid,
+        CourseUid : req.body.cuid
+      }
+
+    });
+
+    /*const tab1 = await Topic_Course.findAll({
+      where :{
+        TopicUid : req.body.topic.uid
+      }
+    });
+
+    if(tab1.length===0)
+    {
+      (async()=>{
+        const tab3 = await Topic_CO.findAll({
+
+          where:{
+            TopicUid : req.body.topic.uid,
+          }
+    
+        });
+        
+        const tab2 = await Topic_CO.destroy({
+          where:{
+            TopicUid : req.body.topic.uid,
+          }
+    
+        });
+        
+        for(let i=0;i<tab3.length;i++)
+        {
+
+          if(tab2.length===0)
+          {
+            (async()=>{
+              const tab = await Topic_Course.destroy({
+                where:{
+                  TopicUid : req.body.topic.uid,
+                  CourseUid : req.body.cuid
+                }
+          
+              });
+            })();
+          }
+        }
+      })();
+
+    }*/
+  //})();
+});
 
 app.post('/rejdel',(req,res)=>{
   (async () => {
@@ -172,7 +306,7 @@ app.post('/delTopic',(req,res)=>
 app.post('/appadd',(req,res)=>
 {
   (async () => {
-    const tab =  await Topic.upadate({status : 1},{
+    const tab =  await Topic.update({status : 1},{
       where :
       {
         uid : req.body.uid
@@ -190,16 +324,17 @@ app.post('/appadd',(req,res)=>
           }
         });
         (async()=>{
-          const antin =  await Topic_Course.update({
-            TopicUid : tab.uid,
-            CourseUid : req.body.cuid,
-            status : 0
-          });
+          const antin =  await Topic_Course.update({status : 1},
+            {
+              where :{
+                TopicUid : req.body.uid,
+              }
+            });
         })().catch(e=>console.log(e));
         for(let i=0;i<abc.length;i++)
         {
           (async()=>{
-            const ta =  await Topic_CO.update({status : 0},
+            const ta =  await Topic_CO.update({status : 1},
             {where:
               {
                 TopicUid : req.body.uid,
@@ -209,11 +344,20 @@ app.post('/appadd',(req,res)=>
             
             
             (async()=>{
-              const antinopole =  await CO_Course.create({
-                COUid : parseInt(req.body.cos[i]),
-                CourseUid : req.body.cuid,
-                status : 0
-              });
+              const antinopole =  await CO_Course.update({ status : 1},
+                {
+                  where :{
+                    COUid : abc[i].COUid
+                  }
+                });
+            })().catch(e=>console.log(e)); 
+            (async()=>{
+              const antinop =  await CO_PO.update({ flag : 1},
+                {
+                  where :{
+                    COUid : abc[i].COUid
+                  }
+                });
             })().catch(e=>console.log(e)); 
           })().catch(e=>console.log(e));
         }
@@ -330,10 +474,17 @@ app.post('/getCO', (req,res)=>{
     (async () => {
         const tab =  await CO.findAll({
           include :{
-            model : Course,
+            model : Topic,
             required : true,
+            include :{
+              model : Course,
+              required : true, 
+              where : {
+                uid : req.body.uid 
+              }
+            },
             where : {
-              uid : req.body.uid 
+              [Op.or]: [{ status: 1 }, { status: -1 }] 
             }
           }
         });
@@ -352,7 +503,8 @@ app.post('/getTopic', (req,res)=>{
             where : {
               uid : req.body.uid 
             }
-          }
+          },
+          [Op.or]: [{ status: 1 }, { status: -1 }]
         });
         //console.log(JSON.stringify(tab, null, 2))
         
@@ -475,7 +627,10 @@ app.post('/teacher/:name/:mane/:year',(req,res)=>
     const tab =  await Course.findOne({
       include :{
         model : Topic,
-        required : true
+        required : true,
+        where : {
+          [Op.or]: [{ status: 1 }, { status: -1 }]
+        }
         
       },
       where :
@@ -518,7 +673,15 @@ app.post('/setQ', (req,res)=>
       });
       
       if(q!==null)res.send(q);
-      else res.send();
+      else 
+      {
+        (async()=>{
+          const pq = await Question.create({
+              CourseUid : t.uid
+          });
+          res.send(pq);
+        })();
+      }
     })().catch(e=>console.log(e));
   })().catch(e=>console.log(e));
 })
@@ -538,7 +701,7 @@ app.post('/setp',(req,res)=>{
       }
     });
     res.send(t);
-  })();
+  })().catch(e=>console.log(e));
 })
 
 app.post('/setpq',(req,res)=>{

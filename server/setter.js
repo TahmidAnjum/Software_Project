@@ -83,8 +83,13 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     '789',
     '890',
     '901'
-  ]
+  ];
+
+
+
   /*
+
+
   (async ()=>{
     const co = await CO.findAll({
       where :
@@ -229,7 +234,17 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     "Hisham",
     "Rakib"
   ];
+  (async()=>{
+    const co = await CO_PO.update({flag : 1},
+      {
+        where:{
+          flag : 0
+        }
+      })
+  })();
 
+
+/*
   (async()=>{
     const crs = await Course.findAll();
     for(let i=0;i<crs.length;i++)
