@@ -4,8 +4,9 @@ import {BrowserRouter} from 'react-router-dom';
 //import './index.css';
 //import App from './App';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.css'
-import Counters from './components/login'
+//import 'bootstrap/dist/css/bootstrap.css'
+import Counters from './components/combined'
+import './css files/new.css'
 //const elem = <h1>'hello world'</h1>;
 //ReactDOM.render(elem, document.getElementById('root'))
 

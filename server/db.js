@@ -122,6 +122,12 @@ const CO = sequelize.define('CO', {
 
   name : {
     type: DataTypes.STRING,
+  },
+  status :
+  {
+    type : DataTypes.INTEGER,
+    defaultValue :1,
+    primaryKey: true
   }
 },{
   timestamps  :false
@@ -136,6 +142,12 @@ const Topic = sequelize.define('Topic', {
 
   name : {
     type: DataTypes.STRING,
+  },
+  status :
+  {
+    type : DataTypes.INTEGER,
+    defaultValue :1,
+    primaryKey: true
   }
 },{
   timestamps  :false
@@ -228,8 +240,58 @@ const Feedback = sequelize.define('Feedback', {
 
 
 const Course_Teach = sequelize.define('Curse_Teach', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true 
+  },
     flag : {
-      type : DataTypes.INTEGER
+      type : DataTypes.INTEGER,
+    }
+},{
+  timestamps  :false
+});
+
+
+
+const Mod_Teach = sequelize.define('Mod_Teach', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true 
+  },
+    flag : {
+      type : DataTypes.INTEGER,
+    }
+},{
+  timestamps  :false
+});
+
+
+
+const Qmod_Teach = sequelize.define('Qmod_Teach', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true 
+  },
+    flag : {
+      type : DataTypes.INTEGER,
+    }
+},{
+  timestamps  :false
+});
+
+
+
+const Qset_Teach = sequelize.define('Qset_Teach', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true 
+  },
+    flag : {
+      type : DataTypes.INTEGER,
     }
 },{
   timestamps  :false
@@ -242,16 +304,37 @@ const Student_Course = sequelize.define('Student_Curse', {},{
   timestamps  :false
 });
 
-const Topic_Course = sequelize.define('Topic_Curse', {},{
+const Topic_Course = sequelize.define('Topic_Curse', {
+  status :
+  {
+    type : DataTypes.INTEGER,
+    defaultValue :1,
+    primaryKey: true
+  }
+},{
   timestamps  :false
   
 });
 
-const CO_Course = sequelize.define('CO_Curse', {},{
+const CO_Course = sequelize.define('CO_Curse', {
+  status :
+  {
+    type : DataTypes.INTEGER,
+    defaultValue :1,
+    primaryKey: true
+  }
+},{
   timestamps  :false
 });
 
-const Topic_CO = sequelize.define('Topic_CO', {},{
+const Topic_CO = sequelize.define('Topic_CO', {
+  status :
+  {
+    type : DataTypes.INTEGER,
+    defaultValue :1,
+    primaryKey: true
+  }
+},{
   timestamps  :false
 });
 
@@ -259,7 +342,18 @@ const Problem_CO = sequelize.define('Problem_CO', {},{
   timestamps  :false
 });
 
-const CO_PO = sequelize.define('CO_PO', {},{
+const CO_PO = sequelize.define('CO_PO', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true // Automatically gets converted to SERIAL for postgres
+  },
+  flag : {
+    type : DataTypes.INTEGER,
+    defaultValue : 1,
+  }
+
+},{
   timestamps  :false
 });
 
@@ -273,6 +367,16 @@ Problem.belongsTo(Question)
 
 Teacher.belongsToMany(Course, {through: Course_Teach})
 Course.belongsToMany(Teacher, {through: Course_Teach})
+
+Teacher.belongsToMany(Course, {through: Mod_Teach})
+Course.belongsToMany(Teacher, {through: Mod_Teach})
+
+Teacher.belongsToMany(Course, {through: Qmod_Teach})
+Course.belongsToMany(Teacher, {through: Qmod_Teach})
+
+Teacher.belongsToMany(Course, {through: Qset_Teach})
+Course.belongsToMany(Teacher, {through: Qset_Teach})
+
 
 
 CO.belongsToMany(Course, {through : CO_Course});
@@ -308,4 +412,4 @@ Student_Course.hasOne(Grade);
 
 
  
-module.exports = {PO ,Course ,Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course, Question, Problem}
+module.exports = {PO ,Course ,Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course, Question, Problem, CO_PO, Topic_CO,Topic_Course,CO_Course,Mod_Teach}

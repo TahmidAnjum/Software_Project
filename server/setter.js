@@ -1,7 +1,7 @@
 
 
 
-const {PO, Course, Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course} = require('./db');
+const {PO, Course, Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course, Question, Problem,CO_PO, Mod_Teach} = require('./db');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { Sequelize } = require('sequelize');
@@ -46,6 +46,8 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     ["Principles", "Interactive System Design"]
   ]
   
+
+  comnam =['North','East', 'West','South'];
   coTop = [
     [[1,2],[3],[1,3]],
     [[1],[1],[1]],
@@ -134,13 +136,13 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
   COPO = [
     [[1,2],[4], [3,6]],
     [[1,2]],
-    [[1,2],[4] ],
-    [[1,2],[4], [3,6],[12]],
+    [[1,2],[4]],
+    [[1,2],[4],[3,6],[12]],
     [[1,2],[4]],
     [[1,2],[4]],
     [[1,2],[4]],
     [[1,2],[4]]
-  
+
   ]
   TeCour = [
     [[20, courseID[6]],[19, courseID[1]],[18, courseID[1]],[20, courseID[4]]],//Sohel Sir
@@ -227,6 +229,145 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     "Hisham",
     "Rakib"
   ];
+
+  (async()=>{
+    const crs = await Course.findAll();
+    for(let i=0;i<crs.length;i++)
+    {
+      //console.log(crs[i].name);
+      (async()=>
+      {
+        const crs_teach = await Mod_Teach.create({
+          flag : 2,
+          CourseUid : crs[i].uid,
+          TeacherUid : 3
+        })
+      })();
+    }
+  })();
+
+/*
+  for(let i=0;i<TeachNames.length;i++)
+  {
+    
+    (async() =>{
+    const tp = await Teacher.findOne({
+      where:
+        {
+          name : TeachNames[i]
+        }
+      });
+      for(let j=0;j<TeCour[i].length;j++)
+      {
+        (async() =>{
+          const tab = await Course.findAll({
+            where:{
+              title :  TeCour[i][j][1],
+              year : TeCour[i][j][0]+2000
+            }
+            
+          });
+          //console.log(i," :\n ",tab,"\n\n\n")
+          (async() =>{
+            await tp.addCourse(tab);
+          })().catch((e)=>{console.log(e)});
+          
+          
+          tab.forEach((t)=>{
+            (async() =>{
+              //await t.addTeacher(tp);
+              const cour_teac = await Course_Teach.update({flag : 1},
+                {
+                  where :{
+                    TeacherUID : tp.uid,
+                    CourseUID : t.uid
+                  }
+                })
+            })().catch((e)=>{console.log(e)});
+          })
+        })().catch((e)=>{console.log(e)});
+      }
+    })().catch((e)=>{console.log(e)});
+    //}
+    
+    
+  }
+
+/*
+  for(let i=1;i<=12;i++)
+  {
+    (async() =>{
+      const po = await PO.findByPk(i);
+      console.log(po)
+    })();
+  }
+
+/*
+for(let i =0;i<coTop.length;i++)
+{
+  for(let j=0;j<coTop[i].length;j++)//console.log(coTop[i][j].length,Topics[i][j]);
+  {
+    (async()=>{
+      const t = await Topic.findOne({
+        include:
+        {
+          model :Course,
+          required : true,
+          where :
+          {
+            title : courseID[i] 
+          }
+        },
+        where :
+        {
+          name : Topics[i][j]
+        }
+      });
+
+
+      for(let k=0;k<coTop[i][j].length;k++)
+      {
+        //console.log(comnam[coTop[i][j][k]-1],i,j,k)
+        (async()=>
+        {
+          const co = await CO.findOne({
+            where :
+            {
+              name : comnam[coTop[i][j][k]-1]+'_'+courseID[i]
+            }
+          });
+          //console.log(co.name, co.uid,i,j,k);
+          (async()=>{await t.addCO(co)})();
+          (async()=>{await co.addTopic(t)})();
+        })();
+      }
+      //for(let pi=0;pi<t.Courses.length;pi++)
+      //{
+      //  if(t.Courses[pi].title==courseID[i]) console.log(pi,courseID[i]);
+      //}
+      //console.log(10*i+j,t.Courses);
+    })();
+  }
+  console.log();
+}
+
+
+
+/*
+(async()=>{
+    const tp = await Problem.findAll({
+      attributes: [
+        'numinQ',
+        [sequelize.fn('sum', sequelize.col('marks')), 'total_amount'],
+      ],
+      group: ['numinQ'],
+      where:
+      {
+        QuestionUid : 1
+      }
+    });
+    console.log(tp[0]);
+})();
 
 
 /*
@@ -325,8 +466,38 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
       }
     }
   })();
-
 /*
+for(let i =0;i<courseID.length;i++){
+  (async ()=>{
+   
+
+    for(let j in COlist[i]){
+      //console.log(i,j,COlist[i][j])
+      (async() =>{
+        const co = await CO.findOne({where:{name:COlist[i][j]+ "_" +courseID[i]}}); 
+        for(let k in COPO[i][j])
+        {
+          (async() =>{
+            const po = await PO.findAll({
+              where :{
+                name : poNames[COPO[i][j][k]-1]
+              }
+            });
+
+            (async() =>{await co.addPO(po)})().catch((e)=>{console.log(e)});;
+            //po.forEach((p)=>{(async() =>{await p.addCO(co)})().catch((e)=>{console.log(e)});;})
+          })().catch((e)=>{console.log(e)});;  
+          //console.log(poNames[COPO[i][j][k]-1])
+        }
+         
+      })().catch((e)=>{console.log(e)});;
+      
+    }
+
+  })().catch((e)=>{console.log(e)});;
+}
+
+  /*
 
 for(let i =0;i<courseID.length;i++){
   (async ()=>{
@@ -401,6 +572,32 @@ for(let i =0;i<courseID.length;i++){
   
 
 /*
+  (async() =>{
+    const tab = await CO_PO.update({flag : 1},{
+      where :{
+        flag : null
+      }
+    });
+    tab.forEach((t)=>
+    {
+      console.log(t)
+    })
+  })().catch((e)=>{console.log(e)});
+  
+/*
+  (async() =>{
+    const tab = await CO.update({status : 1},{
+      where :{
+        status : null
+      }
+    });
+    tab.forEach((t)=>
+    {
+      console.log(t)
+    })
+  })().catch((e)=>{console.log(e)});
+  
+  /*
   (async() =>{
     const tab = await Course_Teach.update({flag : 1},{
       where :{

@@ -6,11 +6,11 @@ import {Link} from 'react-router-dom';
 const Navbar = () =>
 {
     return(
-        <ul>
-            <li><Link to='/'>Home</Link></li>
-            <li><Link to='/login'>In</Link></li>
-            <li><Link to='/logout'>Out</Link></li>
-            <li><Link to='/teacher'>Teach</Link></li>
+        <ul className=".anjum">
+            <li><Link className=".anjum" to='/'>Home</Link></li>
+            <li><Link className=".anjum" to='/login'>In</Link></li>
+            <li><Link className=".anjum" to='/logout'>Out</Link></li>
+            <li><Link className=".anjum" to='/teacher'>Teach</Link></li>
         </ul>
     );
 }

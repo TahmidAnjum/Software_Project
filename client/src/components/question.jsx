@@ -8,13 +8,9 @@ class Question extends Component {
     }
 
 
-    
-
     componentDidMount() {
         (async()=>{
             let {data : problems} = await axios.get("http://localhost:5000/setQ");
-            //console.log(problems);
-            //let arr = []
             this.setState({problems})
         })().catch((e)=>{console.log(e)});;
         

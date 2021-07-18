@@ -1,0 +1,262 @@
+
+body {
+    background-color: #d3d3d3;
+    font-family: 'Montserrat', sans-serif;
+    color: #000000;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+ul {
+  color: #0000ff;
+  font-size: 34px;
+}
+
+li {
+  color: #ff00ff;
+  font-size: 34px;
+}
+.combined{
+  background-image: url(../images/FIgmaPics/RoXV9S.jpg);
+  /*background-color: black;*/
+  height: 100vh;
+}
+
+.signin {
+  background-color: #d3d3d3;
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.login {
+  position: relative;
+  height: 625px;
+  width: 450px;
+  margin: auto;
+  padding: 60px 60px;
+  /*background: url(https://picsum.photos/id/1004/5616/3744) no-repeat   center center #505050;   */  
+  /*background: url(../images/FIgmaPics/photo-1544377137-b01b843568a0.jpg) no-repeat   center center #505050;*/
+  background-size: cover;
+  box-shadow: 0px 0px 60px 0px black;
+}
+
+form {
+  padding-top: 80px;
+}
+
+.active {
+  color: #d3d3d3;
+  border-bottom: 2px solid #1161ed;
+}
+
+h2 {
+  padding-left: 12px;
+  font-size: 22px;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  letter-spacing: 2px;
+  display: inline-block;
+  font-weight: 100;
+}
+
+h2:first-child {
+  padding-left: 0px;
+}
+
+.text {
+  border: none;
+  width: 89%;
+  padding: 10px 20px;
+  display: block;
+  height: 15px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0);
+  overflow: hidden;
+  margin-top: 15px;
+  transition: all 0.5s ease-in-out;
+}
+
+.text:focus {
+  outline: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0);
+}
+
+.text:focus + span {
+  opacity: 0.6;
+}
+
+input[type="text"],
+input[type="password"] {
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
+}
+
+
+
+input {
+  display: inline-block;
+  padding-top: 20px;
+  font-size: 14px;
+}
+
+
+h2,
+span,
+.custom-checkbox {
+  margin-left: 20px;
+}
+
+.signin {
+  background-color: #1161ed;
+  color: #FFF;
+  width: 100%;
+  padding: 10px 20px;
+  display: block;
+  height: 39px;
+  border-radius: 20px;
+  margin-top: 30px;
+  transition: all 0.5s ease-in-out;
+  border: none;
+  text-transform: uppercase;
+}
+
+.signin:hover {
+  background: #4082f5;
+  box-shadow: 0px 4px 35px -5px #4082f5;
+  cursor: pointer;
+}
+
+.signin:focus {
+  outline: none;
+}
+
+
+.anjum{
+  margin: auto;
+  position: relative;
+  color: #fff;
+  right: 100;
+  padding: 60px 20px;
+  font-size: 14px;
+}
+
+.stdNav{
+  position: relative;
+  color: #fff;
+  height: 40px;
+  background: #ff00ff;
+  font-size: 28px;
+}
+
+.anjum:hover{
+  color: #0f0
+}
+
+.gg1,.gg2{
+  background-color: #fff;
+  width: 650px;
+  box-shadow: inset 0px 0px 3px 0px #000;
+}
+
+
+
+
+.wrapper{
+  display: grid;
+  grid-template-columns: 15% 85%;
+}
+
+
+.Courses{
+  display: grid;
+  grid-template-columns: 50% 50%;
+  height: 95vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.dummy{
+  background: inherit;
+  filter: blur(10px);
+  background-position: center;
+}
+.gg{
+  border-radius: 15px;
+  box-shadow: 0px 0px 15px 0px black;
+  margin: 10px;
+  margin-left : 25px;
+  height: 225px;
+  font-size: 28px;
+  padding: 5px;
+  padding-left: 10px;
+  opacity: 1;
+}
+
+.gg:hover{
+  box-shadow: 0px 0px 15px 0px white;
+}
+
+
+.TeachMas{
+  box-shadow: 0px 0px 30px 0px #000;
+  width: 100%;
+}
+.TeachMas:hover{
+  box-shadow: 0px 0px 10px 0px white;
+}
+.TeachSide{
+  width: inherit;
+  border: none;
+  background: inherit;
+  height: 50px;
+  font-size: 20px;
+  color: white;
+}
+
+.TeachSide:hover{
+  color:white;
+  background-color: white;
+  position: relative;
+  color: black;
+}
+
+a{
+  color: white;
+}
+
+p {
+  color: white;
+}
+.delTopic{
+  box-shadow: 0px 0px 10px 0px black;
+  padding-left: 20px;
+  margin: 10px;
+  height: 95vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}/*
+select[multiple] {
+  appearance: none;
+  background-color :rgba(255, 255, 255, 1);
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 10px;
+  width: 95%;
+  font-family: inherit;
+  font-size: 20px;
+}
+
+option :hover {
+  background-color: blue;
+}
+option:checked{
+  color: yellow;
+}
+
+@keyframes picChange1 {
+  from {background-color: red;}
+  to {background-color: yellow;}
+}*/
