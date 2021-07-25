@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import React, { Component } from 'react';
-
+import Student from './student';
 class giveFeed extends Component {
     state = { 
         feedback :{
@@ -44,15 +44,28 @@ class giveFeed extends Component {
 
     handleSubmit = e =>{
         e.preventDefault();
+        const {feedback} = this.state;
+        if(feedback.course===''||feedback.teacher===''||feedback.description==='')
+        {
+            window.alert('The credentials are not full');
+            return;
+        }
         const gg = localStorage.getItem("anjum");
         const ff = jwtDecode(gg);
-        const feedback = {...this.state.feedback}
+        //const feedback = {...this.state.feedback}
         const req = {suid  : ff.uid, tuid : parseInt(feedback.teacher), cuid:parseInt(feedback.course), description : feedback.description};
         console.log(req);
         (async()=>{
             await axios.post("http://localhost:5000/givefeed", req);
         })();
-        this.props.history.push('/'+ff.name+'/'+ff.student_id);
+        window.alert("Submitted");
+        //this.props.history.push('/student/'+ff.name+'/'+ff.student_id);
+    }
+    handleBack = e =>{
+        e.preventDefault();
+        const gg = localStorage.getItem("anjum");
+        const ff = jwtDecode(gg);
+        this.props.history.push('/student/'+ff.name+'/'+ff.student_id);
     }
 
     render() { 
@@ -64,10 +77,14 @@ class giveFeed extends Component {
         console.log(this.state.feedback);
         return (
             <div>
+                <Student history={this.props.history}/>
+            <div className="stdfeed">
+                <h1 className="heer">Feedback</h1>
                 <form action="">
-                    <p>Choose Course</p>
+                    
                     <div className="col-md-12">
-                    <select className="form-select"  name="course" onChange={this.handleChange}id="">
+                    <h1><p>Choose Course</p></h1>
+                    <select className="form-select1"  name="course" onChange={this.handleChange}id="">
                         <option> Choose Course</option>
                     {crs.map(course=>
                         <option key={course.uid} value={course.uid} id="anjum" > {course.name} </option>
@@ -75,7 +92,8 @@ class giveFeed extends Component {
                     </select>
                     </div>
                     <div className="col-md-12">
-                    <select className="form-select" name="teacher"  onChange={this.handleChange}id="">
+                    <h1><p>Choose Teacher</p></h1>
+                    <select className="form-select1" name="teacher"  onChange={this.handleChange}id="">
                     <option> Choose Teacher</option>
 
                     {teachers.map(course=>
@@ -83,10 +101,11 @@ class giveFeed extends Component {
                     )}
                     </select>
                     </div>
-                    <p>Description</p>
-                    <div><input type="text" value={description} onChange={this.handleChange} name="description"/></div>
-                    <button onClick={this.handleSubmit}> Submit</button>
-                </form>
+                    <h1><p>Description</p></h1>
+                    <div><input className="input_2" type="text" value={description} onChange={this.handleChange} name="description"/></div>
+                    
+                </form><span><button className="signin2" onClick={this.handleSubmit}>Submit</button></span><span><button className="signin3" onClick={this.handleBack}>Exit</button></span>
+            </div>
             </div>
           );
     }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
-import Teachside from './teachside';
+//import Teachside from './teachside';
+import Student from './student';
 import { Bar } from 'react-chartjs-2';
-class Topic extends Component {
+class stTopic extends Component {
     state = {
         topics :[],
         GPAData : {
@@ -89,8 +90,8 @@ class Topic extends Component {
     }
     render() { 
         return (
-            <div className="frap">
-                <Teachside history={this.props.history}/>
+            <div>
+                <Student history={this.props.history}/>
                 <div className="Topics"><ol>
                 {this.state.topics.map(course=>
                 <li  key={course.uid}> 
@@ -127,4 +128,4 @@ class Topic extends Component {
     }
 }
  
-export default Topic;
+export default stTopic;

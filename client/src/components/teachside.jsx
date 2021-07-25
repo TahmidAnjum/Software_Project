@@ -208,6 +208,40 @@ class teachside extends Component {
         
         
       }
+      feedbackMod = ()=>{
+        const gg = localStorage.getItem("anjum");
+        ////console.log('teacher',jwtDecode(gg));
+        const pp = jwtDecode(gg);
+        localStorage.clear();
+        const jwt = sign(pp,secret);
+        localStorage.setItem("anjum",jwt);
+        (async()=>{
+            const {data:feed} = await axios.post("http://localhost:5000/getfeedMod",pp);
+            console.log(feed);
+            const jwt = sign(feed,secret);
+            localStorage.setItem("feed",jwt);
+            this.props.history.push("/teacher/"+pp.name+"/feedbackMod");
+        })();
+        
+        
+      }
+      feedbackQues = ()=>{
+        const gg = localStorage.getItem("anjum");
+        ////console.log('teacher',jwtDecode(gg));
+        const pp = jwtDecode(gg);
+        localStorage.clear();
+        const jwt = sign(pp,secret);
+        localStorage.setItem("anjum",jwt);
+        (async()=>{
+            const {data:feed} = await axios.post("http://localhost:5000/getfeedQues",pp);
+            console.log(feed);
+            const jwt = sign(feed,secret);
+            localStorage.setItem("feed",jwt);
+            this.props.history.push("/teacher/"+pp.name+"/feedbackQues");
+        })();
+        
+        
+      }
       logout = () =>
       {
           localStorage.clear();
@@ -225,8 +259,8 @@ class teachside extends Component {
                   <button className="TeachSide" onClick={this.modCour}>Moderate Course</button>
                   <button className="TeachSide" onClick={this.grade}>Grade Answer</button>
                   <button className="TeachSide" onClick={this.feedback}>FeedBack</button>
-                  <button className="TeachSide" onClick={this.feedback}>FeedBack(Course Moderator)</button>
-                  <button className="TeachSide" onClick={this.feedback}>FeedBack</button>
+                  <button className="TeachSide" onClick={this.feedbackMod}>FeedBack(Course Moderator)</button>
+                  <button className="TeachSide" onClick={this.feedbackQues}>FeedBack(from Q Mod)</button>
                   <button className="TeachSide" onClick={this.logout}>Log out</button>
               </div>
            );

@@ -1,6 +1,7 @@
 import jwtDecode from 'jwt-decode';
 import React, { Component } from 'react';
 import pic from '../images/FIgmaPics/aaaaaa.png'
+import Student from './student';
 class stdprof extends Component {
     state = {
         teacher : jwtDecode(localStorage.getItem("anjum"))
@@ -13,7 +14,9 @@ class stdprof extends Component {
        const {teacher} = this.state;
         return ( 
             
-                <div className="Proftest">
+                <div>
+                    <Student history={this.props.history}/>
+                    <div className="Proftest">
                     <div className="Profimg">
                         <img src={pic} alt="" />
                     </div>
@@ -27,6 +30,7 @@ class stdprof extends Component {
                        <div><p>Contact info  : 01xxxxxxxxx</p></div>
                        </pre>
                    </div>
+                </div>
                 </div>
 
          );

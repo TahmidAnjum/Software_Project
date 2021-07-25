@@ -115,39 +115,52 @@ class modeCour extends Component {
         return (
             <div className='frap'> 
                 <Teachside history={this.props.history}/>
-                <div>
-                    <div><h1>Delete Topic Requests {getDel}</h1></div>
+                <div className="modecor">
+                    <div><h1><p>Delete Topic Requests</p> {getDel}</h1></div>
                     <div className="gg1">
                         <div hidden={getDel}>This section is empty</div>
                         <div hidden={!getDel} >
                             {delTops.map(course=> 
                     
                             <div key={course.uid} > 
-                                <h2>-{course.name} <button onClick={()=>{this.approveDel(course)}}>+</button><button onClick={()=>{this.rejectDel(course)}}>-</button></h2>
+                                <h2>-{course.name} </h2><ol type='a'> <br />
+                                {course.COs.map(co=>
+                                <li>
+                                    
+                                            <i>{co.name}</i> <ol type='i'> {co.POs.map(po=>
+                                            
+                                        <li >
+                                                {po.name}
+                                        </li>
+                                    )}<br /></ol>
+                                    
+                                </li> 
+                                
+                                )} <br /> </ol> <div><button className="signin2" onClick={()=>{this.approveDel(course)}}>Approve</button><button className="signin3" onClick={()=>{this.rejectDel(course)}}>Reject</button></div>
                             </div>)}
                         </div>
                     </div>
                 
-                    <div><h1>Add Topic Requests {getAdd}</h1></div>
+                    <div><h1><p>Add Topic Requests</p> {getAdd}</h1></div>
                     <div className="gg2">
                         <div hidden={getAdd}>This section is empty</div>
                         <div hidden={!getAdd}>
                             {addTops.map(course=> 
                             <div key={course.uid} > 
-                                <h2>-{course.name}</h2> <ol type='a'> <br />
-                        {course.COs.map(co=>
-                        <li>
-                            
-                                    <i>{co.name}</i> <ol type='i'> {co.POs.map(po=>
+                                <h2>{course.name}</h2> <ol type='a'> <br />
+                                {course.COs.map(co=>
+                                <li>
                                     
-                                <li >
-                                        {po.name}
-                                </li>
-                            )}<br /></ol>
-                            
-                        </li> 
-                           
-                        )} <br /> </ol> <button onClick={()=>{this.approveAdd(course)}}>+</button><button onClick={()=>{this.rejectAdd(course)}}>-</button>
+                                            <i>{co.name}</i> <ol type='i'> {co.POs.map(po=>
+                                            
+                                        <li >
+                                                {po.name}
+                                        </li>
+                                    )}<br /></ol>
+                                    
+                                </li> 
+                                
+                                )} <br /> </ol> <div><button className='signin2' onClick={()=>{this.approveAdd(course)}}>Approve</button><button className='signin3' onClick={()=>{this.rejectAdd(course)}}>Reject</button></div>
                             </div>)}
                         </div>
                     </div>
