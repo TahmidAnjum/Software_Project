@@ -40,6 +40,14 @@ const Course = sequelize.define('Course', {
   year : {
     type: DataTypes.INTEGER,
     //unique : true
+  }, 
+  level : {
+    type: DataTypes.INTEGER,
+    //unique : true
+  },
+  term : {
+    type: DataTypes.INTEGER,
+    //unique : true
   }
   
 

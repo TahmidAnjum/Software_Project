@@ -115,6 +115,57 @@ app.get('/', (req,res)=>{
 });
 
 
+app.post('/seeresult',(req,res)=>{
+  (async()=>{
+    const crs = await Course.findAll({
+      include :
+      {
+        model : Student,
+        required : true,
+        where :
+        {
+          uid : req.body.suid
+        }
+      },
+      where :
+      {
+        level : req.body.level,
+        term : req.body.term
+      }
+    });
+    let arr = [];
+    //console.log(crs.length)
+    (async()=>{
+      for(let i=0; i<crs.length;i++)
+      {
+        console.log(crs[i].uid,req.body.suid);
+        const stcr = await Student_Course.findOne({
+          where :{
+            StudentUid : req.body.suid,
+            CourseUid : crs[i].uid
+          }
+        });
+        //console.log(stcr)
+        
+        const grd = await Grade.findOne({
+          where:{
+            StudentCurseUid : stcr.uid
+          }
+        });
+        
+        let ret ={course :{}, grade:{}};
+        ret.course = crs[i];
+        ret.grade = grd;
+        arr.push(ret);
+        //arr.push(grd);
+      }
+      //console.log(arr);
+      res.send(arr);
+    })().catch((e)=>console.log(e));
+    //res.send(crs);
+  })();
+});
+
 
 app.post('/stdcourses',(req,res)=>{
   (async () => {
@@ -208,6 +259,120 @@ app.post('/givefeed',(req,res)=>{
   })();
 })
 
+app.post('/getfeedMod',(req,res)=>{
+  /*(async()=>{
+    const feed = await Feedback.findAll(
+      {
+        where:
+        {
+          [Op.or]: [{TeacherUid : req.body.uid},
+            {StudentUid : {[Op.ne]:-1}}]
+          
+        }
+      });
+      res.send(feed);
+  })();*/
+  (async () => {
+  
+    const tab = await Mod_Teach.findAll({
+      where : {
+        TeacherUid : req.body.uid,
+      }
+    })
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Feedback.findAll(
+          {
+            where:
+            {
+              CourseUid : tab[i].CourseUid,
+              StudentUid : {[Op.ne]:-1}
+              
+            }
+          }); 
+          crs.forEach(cs=>
+            {
+              let tob = {course : {}, info : {}};
+              (async()=>{
+                const tb = await Course.findOne({
+                  attributes:['title','name','year'],
+                  where:{
+                    uid :cs.CourseUid
+                  }
+                });
+                tob.course = tb;
+                tob.info = cs;
+                //cs['Course'] = tb;
+                //let sed = {...tb,...cs};
+                courses.push(tob);
+              })();
+              
+            })
+      }
+      res.send(courses);
+    })();
+  })();
+});
+
+app.post('/getfeedQues',(req,res)=>{
+  /*(async()=>{
+    const feed = await Feedback.findAll(
+      {
+        where:
+        {
+          [Op.or]: [{TeacherUid : req.body.uid},
+            {StudentUid : {[Op.ne]:-1}}]
+          
+        }
+      });
+      res.send(feed);
+  })();*/
+  (async () => {
+  
+    const tab = await Course_Teach.findAll({
+      where : {
+        TeacherUid : req.body.uid,
+        flag : 1
+      }
+    })
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Feedback.findAll(
+          {
+            where:
+            {
+              CourseUid : tab[i].CourseUid,
+              StudentUid : null
+              
+            }
+          }); 
+          crs.forEach(cs=>
+            {
+              let tob = {course : {}, info : {}};
+              (async()=>{
+                const tb = await Course.findOne({
+                  attributes:['title','name','year'],
+                  where:{
+                    uid :cs.CourseUid
+                  }
+                });
+                tob.course = tb;
+                tob.info = cs;
+                //cs['Course'] = tb;
+                //let sed = {...tb,...cs};
+                courses.push(tob);
+              })();
+              
+            })
+      }
+      res.send(courses);
+    })();
+  })();
+});
 app.post('/getfeed',(req,res)=>{
   /*(async()=>{
     const feed = await Feedback.findAll(
@@ -234,14 +399,14 @@ app.post('/getfeed',(req,res)=>{
       for(let i=0;i<tab.length;i++)
       {
           const crs = await Feedback.findAll(
+          {
+            where:
             {
-              where:
-              {
-                CourseUid : tab[i].CourseUid,
-                StudentUid : {[Op.ne]:-1}
-                
-              }
-            }); 
+              CourseUid : tab[i].CourseUid,
+              StudentUid : {[Op.ne]:-1}
+              
+            }
+          }); 
           crs.forEach(cs=>
             {
               let tob = {course : {}, info : {}};
@@ -817,6 +982,27 @@ app.post('/teacher1/:name',(req,res)=>
   })();
   })();
 });
+
+app.post('/crsstd',(req,res)=>
+{
+  (async()=>{
+    const crs = await Course.findAll({
+      include :
+      {
+        model : Student,
+        required : true,
+        where :
+        {
+          uid : req.body.uid
+        }
+      }
+    });
+    crs.sort((a,b)=>{
+      b.year-a.year
+    })
+    res.send(crs)
+  })();
+})
 
 app.post('/teacher/:name',(req,res)=>
 {

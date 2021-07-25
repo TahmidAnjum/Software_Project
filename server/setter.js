@@ -249,7 +249,40 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     if(num<40)  return 0.00;
   }
 
+  (async () => {
+    const tab =  await Course.findOne({
+      include :{
+        model : Topic,
+        required : true,
+        include :{
+          model : CO,
+          required : true,
+          include :{
+            model : PO,
+            required : true,
+          }
+        },
+        where : {
+          [Op.or]: [{ status: 1 }, { status: -1 }]
+        }
+        
+      },
+      where :
+      {
+        title : 'CSE408'
+      }
+    });
+    for(let i=0;i<tab.Topics.length;i++)
+    {
+      for(let j=0;j<tab.Topics[i].length;j++)
+      {
+        console.log("The great saitama");
+      }
+    }
+    console.log(tab.Topics.length);
+  })();
 
+/*
   (async()=>{
     const std = await Student_Course.findAll({
       

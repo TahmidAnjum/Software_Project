@@ -8,12 +8,21 @@ const getGPA = (num) =>{
     if(num>=50) return 2.50;
     if(num>=45) return 2.25;
     if(num>=40) return 2.00;
-    if(num<40)  return 0.00;
+    if(num<40 )  return 0.00;
+  }
+  const getGrd = (num) =>{
+    if(num>=4.00) return 'A+' ;
+    if(num>=3.75) return 'A';
+    if(num>=3.50) return 'A-';
+    if(num>=3.25) return 'B+';
+    if(num>=3.00) return 'B';
+    if(num>=2.75) return 'C+';
+    if(num>=2.50) return 'C';
+    if(num>=2.25) return 'D+';
+    if(num>=2.00) return 'D';
+    if(num< 0.00) return 'F';
   }
 
-
-  for(let i=0;i<5;i++)
-  {
-    let num = Math.floor(Math.random() * (100 - 70) ) + 70;
-    console.log(num,getGPA(num));
-  }
+ const map1 = new Map();
+ map1.set()
+ console.log(map1);
