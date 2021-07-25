@@ -2,7 +2,7 @@
 const express = require('express');
 
 require('dotenv').config();
-const {PO, Course, Student, CO ,Teacher, Question,Problem, Topic,CO_PO,Topic_CO, Topic_Course, CO_Course, Course_Teach, Mod_Teach} = require('./db')
+const {PO, Course, Student, CO ,Teacher, Question,Problem,Feedback,Grade, Topic,CO_PO,Topic_CO,Qmod_Teach, Topic_Course, CO_Course, Course_Teach, Mod_Teach, Student_Course} = require('./db')
 const { Sequelize } = require('sequelize');
 const { Op } = require('sequelize');
 const app = express();
@@ -114,6 +114,180 @@ app.get('/', (req,res)=>{
     
 });
 
+
+
+app.post('/stdcourses',(req,res)=>{
+  (async () => {
+  
+    const tab = await Student_Course.findAll({
+      where : {
+        StudentUid : req.body.uid
+      }
+    })
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Course.findByPk(tab[i].CourseUid); 
+          courses.push(crs);
+      }
+      courses.sort()
+      res.send(courses);
+    })();
+  })();
+});
+
+
+app.post('/viewgrades',(req,res)=>{
+  (async()=>{
+    const std = await Student_Course.findAll({
+      
+        where :
+        {
+          CourseUid : req.body.uid
+        }
+      
+
+    });
+    let arr = [];
+    (async()=>{
+      for(let i=0; i<std.length;i++)
+      {
+        const grd = await Grade.findOne({
+          where :{
+            StudentCurseUid : std[i].uid
+          }
+        });
+        const stdnt = await Student.findByPk(std[i].StudentUid);
+        //console.log(stdnt);
+        let ret ={student :{}, grade:{}};
+        ret.student = stdnt;
+        ret.grade = grd;
+        arr.push(ret);
+        //console.log(ret);
+      }
+      console.log(arr);
+      res.send(arr);
+    })();
+  })();
+});
+
+app.post('/modQues',(req,res)=>{
+  (async () => {
+  
+    const tab = await Qmod_Teach.findAll({
+      where : {
+        TeacherUid : req.body.uid
+      }
+    })
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Course.findByPk(tab[i].CourseUid); 
+          courses.push(crs);
+      }
+      courses.sort((a,b)=>{
+        return b.year-a.year;
+      })
+      res.send(courses);
+    })().catch((e)=>{console.log(e)});
+  })();
+})
+
+
+app.post('/givefeed',(req,res)=>{
+  (async ()=>{
+    const feed = await Feedback.create({
+      description : req.body.description,
+      flag : 1,
+      TeacherUid : req.body.tuid,
+      StudentUid : req.body.suid,
+      CourseUid : req.body.cuid
+    })
+  })();
+})
+
+app.post('/getfeed',(req,res)=>{
+  /*(async()=>{
+    const feed = await Feedback.findAll(
+      {
+        where:
+        {
+          [Op.or]: [{TeacherUid : req.body.uid},
+            {StudentUid : {[Op.ne]:-1}}]
+          
+        }
+      });
+      res.send(feed);
+  })();*/
+  (async () => {
+  
+    const tab = await Course_Teach.findAll({
+      where : {
+        TeacherUid : req.body.uid,
+        flag : 1
+      }
+    })
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Feedback.findAll(
+            {
+              where:
+              {
+                CourseUid : tab[i].CourseUid,
+                StudentUid : {[Op.ne]:-1}
+                
+              }
+            }); 
+          crs.forEach(cs=>
+            {
+              let tob = {course : {}, info : {}};
+              (async()=>{
+                const tb = await Course.findOne({
+                  attributes:['title','name','year'],
+                  where:{
+                    uid :cs.CourseUid
+                  }
+                });
+                tob.course = tb;
+                tob.info = cs;
+                //cs['Course'] = tb;
+                //let sed = {...tb,...cs};
+                courses.push(tob);
+              })();
+              
+            })
+      }
+      res.send(courses);
+    })();
+  })();
+});
+
+app.post('/fromQuesMod',(req,res)=>{
+  (async()=>{
+    const teachers = await Course_Teach.findAll({
+      where :{
+        CourseUid : req.body.cuid,
+        flag : 1
+      }
+    });
+    for(let i=0;i<teachers.length;i++)
+    {
+      (async ()=>{
+        const feed = await Feedback.create({
+          description : req.body.description,
+          flag : -1,
+          TeacherUid : teachers[i].TeacherUid,
+          TeacherUid : teachers[i].TeacherUid,
+          CourseUid : req.body.cuid
+        })
+      })();
+    }
+  })();
+});
 
 app.post('/rejadd',(req,res)=>{
   (async () => {
@@ -266,21 +440,45 @@ app.post('/delreqs',(req,res)=>{
   (async()=>
   {
     const tops = await Topic.findAll({
+      where :
+      {
+        status : -1
+      },
       include:
       {
         model : Course,
         required : true,
         where :
         {
-          uid : req.body.uid
+          uid : parseInt(req.body.uid)
         }
-      },
-      where :
-      {
-        status : -1
       }
+      
     });
-    res.send(tops);
+    let topics =[];
+    (async()=>{
+    for(let i=0;i<tops.length;i++){
+      const ans = await Topic.findOne(
+        {
+          include :{
+            model : CO,
+            required : true,
+            include :{
+              model : PO,
+              required : true,
+            }
+          },
+          where :
+          {
+            uid:tops[i].uid
+          }
+        });
+        topics.push(ans);
+    }
+    console.log(topics);
+    res.send(topics);
+  })();
+    //res.send(tops);
   })();
 });
 
@@ -295,7 +493,7 @@ app.post('/delTopic',(req,res)=>
     (async () => {
       const tab =  await Topic.update({status : -1},{
         where :{
-          uid : req.body.uids[i]
+          uid : parseInt(req.body.uids[i])
         }
       });
     })().catch(e=>console.log(e))
@@ -494,6 +692,9 @@ app.post('/getCO', (req,res)=>{
       })();
     
 });
+
+
+
 app.post('/getTopic', (req,res)=>{
     (async () => {
         const tab =  await Topic.findAll({
@@ -504,7 +705,9 @@ app.post('/getTopic', (req,res)=>{
               uid : req.body.uid 
             }
           },
-          [Op.or]: [{ status: 1 }, { status: -1 }]
+          where :{
+            [Op.or]: [{ status: 1 }, { status: -1 }] 
+          }
         });
         //console.log(JSON.stringify(tab, null, 2))
         
@@ -542,7 +745,38 @@ app.post('/getaddtop',(req,res)=>{
         status : 0
       }
     });
-    res.send(tops);
+    let topics =[];
+    (async()=>{
+    for(let i=0;i<tops.length;i++){
+      const ans = await Topic.findOne(
+        {
+          include :{
+            model : CO,
+            required : true,
+            include :{
+              model : PO,
+              required : true,
+            }
+          },
+          where :
+          {
+            uid:tops[i].uid
+          }
+        });
+        topics.push(ans);
+    }
+    console.log(topics);
+    res.send(topics);
+  })();
+    //res.send(tops);
+  })();
+});
+
+
+app.post('/coursebyid',(req,res)=>{
+  (async()=>{
+    const tab = await Course.findByPk(req.CourseUid);
+    res.send(tab);
   })();
 })
 
@@ -576,6 +810,9 @@ app.post('/teacher1/:name',(req,res)=>
         const crs = await Course.findByPk(tab[i].CourseUid); 
         courses.push(crs);
     }
+    courses.sort((a,b)=>{
+      return b.year-a.year;
+    })
     res.send(courses);
   })();
   })();
@@ -615,6 +852,9 @@ app.post('/teacher/:name',(req,res)=>
         courses.push(crs);
       
     }
+    courses.sort((a,b)=>{
+      return b.year-a.year;
+    })
     //console.log(courses);
     res.send(courses);
   })();
@@ -628,6 +868,14 @@ app.post('/teacher/:name/:mane/:year',(req,res)=>
       include :{
         model : Topic,
         required : true,
+        include :{
+          model : CO,
+          required : true,
+          include :{
+            model : PO,
+            required : true,
+          }
+        },
         where : {
           [Op.or]: [{ status: 1 }, { status: -1 }]
         }
@@ -645,6 +893,26 @@ app.post('/teacher/:name/:mane/:year',(req,res)=>
   })();
 });
 
+
+app.post('/getQues',(req,res)=>{
+  (async () => {
+    const tab =  await Question.findAll(
+      {
+        include:
+        {
+          model: Problem,
+          required :true
+        },
+        where :
+        {
+          CourseUid : req.body.uid
+        }
+      }
+    );
+    //console.log(tab.Problems);
+    res.send(tab)
+  })().catch(e=>console.log(e));
+})
 
 app.get('/setQ', (req,res)=>
 {
@@ -753,7 +1021,25 @@ app.post('/problemSet',(req,res)=>{
 })
 
 
-
+app.post('/getTeacher',(req,res)=>{
+  (async()=>{
+    const tab = await Course_Teach.findAll({
+      where : {
+        CourseUid : req.body.uid,
+        flag : 1
+      }
+    });
+    let courses = [];
+    (async()=>{
+      for(let i=0;i<tab.length;i++)
+      {
+          const crs = await Teacher.findByPk(tab[i].TeacherUid); 
+          courses.push(crs);
+      }
+      res.send(courses);
+    })();
+  })();
+})
 
 
 app.post('/login', (req,res)=>
@@ -761,6 +1047,7 @@ app.post('/login', (req,res)=>
   //res.send("");
   //console.log(typeof(req.body.email));
   //res.send("<p>dhur</p>");
+  const dat = {msg : "wrong"};
   (async () => {
     const tab =  await Teacher.findOne({
       where :
@@ -776,12 +1063,12 @@ app.post('/login', (req,res)=>
         const tab =  await Student.findOne({
           where :
           {
-            student_id : req.body.email
+            student_id : parseInt(req.body.email)
           }
         });
         if(tab==null)
         {
-          res.status(404).send();
+          res.send({msg: 'User not found'});
         }
         else
         {
@@ -793,10 +1080,10 @@ app.post('/login', (req,res)=>
           }
           else{
             console.log(tab.password,passtoken);
-            res.status(404).send();
+            res.send({msg: 'Wrong password'});
           }
         }
-      })();
+      })().catch(e=>console.log(e));;
     }
     else
     {
@@ -808,11 +1095,11 @@ app.post('/login', (req,res)=>
       }
       else{
         //console.log(tab.password,passtoken);
-        res.status(404).send();
+        res.send({msg: 'Wrong password'});
       }
     }
     //res.send(tab);
-  })();
+  })().catch(e=>console.log(e));;
 
 })
 

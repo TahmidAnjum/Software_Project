@@ -222,6 +222,10 @@ const Grade = sequelize.define('Grade',{
   timestamps  :false
 });
 
+
+
+
+
 const Feedback = sequelize.define('Feedback', {
   uid : {
     type: DataTypes.INTEGER,
@@ -230,7 +234,31 @@ const Feedback = sequelize.define('Feedback', {
   },
 
   description : {
-    type : DataTypes.DOUBLE
+    type : DataTypes.STRING
+  },
+  flag :
+  {
+    type : DataTypes.INTEGER
+  }
+},{
+  timestamps  :false
+});
+
+
+
+const Notification = sequelize.define('Notification', {
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true 
+  },
+
+  teachuid : {
+    type : DataTypes.INTEGER
+  },
+  flag :
+  {
+    type : DataTypes.INTEGER
   }
 },{
   timestamps  :false
@@ -300,7 +328,13 @@ const Qset_Teach = sequelize.define('Qset_Teach', {
 
 
 
-const Student_Course = sequelize.define('Student_Curse', {},{
+const Student_Course = sequelize.define('Student_Curse',{
+  uid : {
+    type: DataTypes.INTEGER,
+    primaryKey : true,
+    autoIncrement : true
+  }
+},{
   timestamps  :false
 });
 
@@ -401,6 +435,14 @@ Grade.belongsTo(Student_Course);
 Student_Course.hasOne(Grade);
 
 
+Feedback.belongsTo(Student);
+Student.hasMany(Feedback);
+
+Feedback.belongsTo(Teacher);
+Teacher.hasMany(Feedback);
+
+Feedback.belongsTo(Course);
+Course.hasMany(Feedback);
 
 
 
@@ -412,4 +454,4 @@ Student_Course.hasOne(Grade);
 
 
  
-module.exports = {PO ,Course ,Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course, Question, Problem, CO_PO, Topic_CO,Topic_Course,CO_Course,Mod_Teach}
+module.exports = {PO ,Course ,Student, CO, Topic, Teacher,Qmod_Teach ,Course_Teach, Grade, Feedback, Student_Course, Question, Problem, CO_PO, Topic_CO,Topic_Course,CO_Course,Mod_Teach}

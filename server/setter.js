@@ -1,7 +1,7 @@
 
 
 
-const {PO, Course, Student, CO, Topic, Teacher, Course_Teach, Grade, Student_Course, Question, Problem,CO_PO, Mod_Teach} = require('./db');
+const {PO, Course, Student, CO, Topic, Teacher, Course_Teach, Grade,Qmod_Teach, Student_Course, Question, Problem,CO_PO, Mod_Teach} = require('./db');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { Sequelize } = require('sequelize');
@@ -234,6 +234,55 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
     "Hisham",
     "Rakib"
   ];
+
+
+  const getGPA = (num) =>{
+    if(num>=80) return 4.00;
+    if(num>=75) return 3.75;
+    if(num>=70) return 3.50;
+    if(num>=65) return 3.25;
+    if(num>=60) return 3.00;
+    if(num>=55) return 2.75;
+    if(num>=50) return 2.50;
+    if(num>=45) return 2.25;
+    if(num>=40) return 2.00;
+    if(num<40)  return 0.00;
+  }
+
+
+  (async()=>{
+    const std = await Student_Course.findAll({
+      
+        where :
+        {
+          CourseUid : 19
+        }
+      
+
+    });
+    let arr = [];
+    (async()=>{
+      for(let i=0; i<std.length;i++)
+      {
+        const grd = await Grade.findOne({
+          where :{
+            StudentCurseUid : std[i].uid
+          }
+        });
+        const stdnt = await Student.findByPk(std[i].StudentUid);
+        //console.log(stdnt);
+        let ret ={student :{}, grade:{}};
+        ret.student = stdnt;
+        ret.grade = grd;
+        arr.push(ret);
+        //console.log(ret);
+      }
+      console.log(arr);
+    })();
+  })();
+
+ 
+  /*
   (async()=>{
     const co = await CO_PO.update({flag : 1},
       {
@@ -241,6 +290,38 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
           flag : 0
         }
       })
+  })();
+*/
+/*
+  (async()=>{
+    const stds = await Student.findAll({
+      where : {
+        level : 4
+      }
+    });
+    //console.log(stds.length);
+    (async()=>{
+      for(let i=0;i<stds.length;i++)
+      {
+        const stcr = await Student_Course.findAll({
+          where:{
+            StudentUid : stds[i].uid,
+          }
+        });
+        (async()=>{
+          for(let j=0;j<stcr.length;j++)
+          {
+            let num = Math.floor(Math.random() * (100 - 70) ) + 70;
+            const grade = await Grade.create({
+              marks : num,
+              GPA : getGPA(num),
+              StudentCurseUid : stcr[j].uid
+            });
+          }
+        })();
+        //console.log(stds[i].uid,stcr.length); 
+      }
+    })();
   })();
 
 
@@ -252,10 +333,10 @@ const sequelize = new Sequelize('postgres://postgres:123@localhost:5432/postgres
       //console.log(crs[i].name);
       (async()=>
       {
-        const crs_teach = await Mod_Teach.create({
+        const crs_teach = await Qmod_Teach.create({
           flag : 2,
           CourseUid : crs[i].uid,
-          TeacherUid : 3
+          TeacherUid : 2
         })
       })();
     }
