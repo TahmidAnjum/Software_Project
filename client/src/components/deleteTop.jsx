@@ -11,6 +11,11 @@ class delTop extends Component {
         }
     }
 
+    componentWillUnmount = () =>{
+        
+        console.log("unmounted add", localStorage);
+    }
+    
     handleChange = e =>
     {
         const topics = {...this.state.topics};
@@ -30,21 +35,40 @@ class delTop extends Component {
     handleSubmit = e =>
     {
         const topics = {...this.state.topics};
+        
+        const tpcToken = localStorage.getItem("anjum");
+        const pp = jwtDecode(tpcToken);
         (async()=>{
             const req = {uids : topics['uids']}
             const {data} = await axios.post("http://localhost:5000/delTopic", req);
             console.log(data);
         })();
+        this.props.history.push("/teacher/"+pp.name+"/seetopics");
+            
+    }
+
+    getCourse = async() =>{
+        const ee = await localStorage.getItem("Course");
+        const ff = jwtDecode(ee);
+       return ff;
+    }
+    
+    getTopics = async() =>{
+        const ee = await localStorage.getItem("Topics");
+        const ff = jwtDecode(ee);
+       return ff;
     }
 
     render() { 
         const {topics} = this.state;
         console.log("render",topics);
-        const crs = jwtDecode(localStorage.getItem("Course"));
-        const tpcs = jwtDecode(localStorage.getItem("Topics"));
+        const crstoken = localStorage.getItem("Course");
+        const crs = jwtDecode(crstoken);
+        const tpcToken = localStorage.getItem("Topics");
+        const tpcs = jwtDecode(tpcToken);
          
         return ( 
-            <div className="wrapper">
+            <div className="frap">
                 <Teachside history={this.props.history}/> 
                 <div className="delTopic">
                     <div>
@@ -67,8 +91,8 @@ class delTop extends Component {
                         </div>
                         
                         
-                        <div   >
-                        <select className="multiselect" value={topics.uid} multiple onChange={this.handleChange} type="text" name="uids" searchable="Search here.." id="selectTab">
+                        <div className="col-md-12"  >
+                        <select className="form-select" value={topics.uid} multiple onChange={this.handleChange} type="text" name="uids" searchable="Search here.." id="selectTab">
                         <option value="" disabled >Choose Topics to delete</option>
                         {tpcs.map(course=>
                             <option key={course.uid} value={course.uid}> {course.name} </option>
@@ -84,7 +108,7 @@ class delTop extends Component {
                         
                             
                         </form>
-                        <div><button onClick={this.handleSubmit}>delete</button></div>
+                        <div><button className="signin" onClick={this.handleSubmit}>delete</button></div>
                     </div>
                </div>
             </div>

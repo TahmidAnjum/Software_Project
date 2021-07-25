@@ -24,6 +24,12 @@ class addTop extends Component {
 
     PO = {};
 
+    componentWillUnmount = () =>{
+        //const prof = localStorage.getItem("anjum");
+        //localStorage.clear();
+        //localStorage.setItem("anjum",prof);
+        console.log("unmounted add", localStorage);
+    }
     
 
 
@@ -51,8 +57,8 @@ class addTop extends Component {
     show2 = e =>
     {
         //document.getElementById("newForm2").multiple=true;
-        document.getElementById("newForm2").onClick="";
-        document.getElementById("newForm2").value=this.state.topic.pos;
+        //document.getElementById("newForm2").onClick="";
+        //document.getElementById("newForm2").value=this.state.topic.pos;
         
     }
 
@@ -76,9 +82,9 @@ class addTop extends Component {
 
     handleNewCO = e =>
     {
-        document.getElementById("selectTab").disabled=true;
-        document.getElementById("newForm1").disabled=false;
-        document.getElementById("newForm2").disabled=false;
+        //document.getElementById("selectTab").disabled=true;
+        //document.getElementById("newForm1").disabled=false;
+        //document.getElementById("newForm2").disabled=false;
         const topic = {...this.state.topic};
         topic['mul2'] = true;
         this.setState({topic});
@@ -114,13 +120,26 @@ class addTop extends Component {
         })();
 
     }
+
+    getUser = async() =>{
+        const gg = await localStorage.getItem("anjum");
+       //console.log('teacher',jwtDecode(gg));
+       const pp = jwtDecode(gg);
+       return pp;
+    }
+    getCourse = async() =>{
+        const ee = await localStorage.getItem("Course");
+        const ff = jwtDecode(ee);
+       return ff;
+    }
+
     handleSubmit =e =>
     {
        e.preventDefault();
        const topic = {...this.state.topic};
        //const gg = localStorage.getItem("anjum");
        //console.log('teacher',jwtDecode(gg));
-       //const pp = jwtDecode(gg);
+       const pp = this.getUser();
        const ee = localStorage.getItem("Course");
        const ff = jwtDecode(ee);
        //this.props.history.push("/teacher/"+pp.name+"/"+ff.title+"/"+ff.year);
@@ -134,7 +153,7 @@ class addTop extends Component {
            const {status} = await axios.post("http://localhost:5000/createTopic", req);
            //var path = {...this.state.path};
            console.log(status);
-           
+           this.props.history.push("/teacher/"+pp.name+"/seetopics");
        })().catch((e)=>{console.log(e)});;
     }
 
@@ -143,37 +162,37 @@ class addTop extends Component {
         //const tch = jwtDecode(localStorage.getItem("Anjum"));
         console.log("render");
         const {topic} = this.state;
-        const crs = jwtDecode(localStorage.getItem("Course"));
-        const COs =jwtDecode(localStorage.getItem("COs"));
-        const POs =jwtDecode(localStorage.getItem("POs"));
+        const crs =(localStorage.getItem("Course") && jwtDecode(localStorage.getItem("Course")))===null?[]:jwtDecode(localStorage.getItem("Course")); //jwtDecode(localStorage.getItem("Course"));//
+        const COs =(localStorage.getItem("COs") && jwtDecode(localStorage.getItem("COs")))===null?[]:jwtDecode(localStorage.getItem("COs")); //jwtDecode(localStorage.getItem("COs"));   //
+        const POs =(localStorage.getItem("POs") && jwtDecode(localStorage.getItem("POs")))===null?[]:jwtDecode(localStorage.getItem("POs")); //jwtDecode(localStorage.getItem("POs"));   //
         //console.log(COs);
         //console.log(crs,POs);
         return (
-            <div className="wrapper">
+            <div className="frap">
                 <Teachside history={this.props.history}/>
                 <div className="AddTopic">
                     <div>
-                        <p>Course Title : {crs.title}</p>
+                        <h1><p>Course Title : {crs.title}</p></h1>
                     </div>
                     
                     <div>
-                        <p>Name : {crs.name}</p>
+                        <h1><p>Name : {crs.name}</p></h1>
                     </div>
                     
                     <div>
-                        <p>Year : {crs.year}</p>
+                        <h1><p>Year : {crs.year}</p></h1>
                     </div>
                     
                     <form action="" onSubmit={this.handleSubmit}>   
                         
                     <div>
-                    <p>Name</p>
+                    <h2><p> Topic Name:</p></h2>
                     </div>
                     
-                    <div><input value={topic.name} onChange={this.handleChange} type="text" name="name" id="" /></div>
+                    <div><input className="addInput" value={topic.name} onChange={this.handleChange} type="text" name="name" id="" /></div>
                 
                     <div className="col-md-12">
-                    <select className="custom-select custom-select-lg"  value={topic.cos} multiple onChange={this.handleChange} type="text" name="cos" searchable="Search here.." id="selectTab">
+                    <select className="form-select"  value={topic.cos} multiple onChange={this.handleChange} type="text" name="cos" searchable="Search here.." id="selectTab">
                     <option value="" disabled >Choose COs</option>
                     {COs.map(course=>
                         <option key={course.uid} value={course.uid}> {course.name} </option>
@@ -182,35 +201,27 @@ class addTop extends Component {
                     </div>
 
                     <div>
-                    <p>---OR---</p>
+                    <h2><p>---OR---</p></h2>
                     </div>
-                    
-                    <div>
-                    </div>
-                    
-                    <div>
-                    <p></p>
-                    </div>
-                    <div>
-                    
-                    </div>
-                        
                     </form>
-                    <div><button onClick={this.handleNewCO}>Add New CO</button></div>
-                        
+                    
                     <form action="" onSubmit={this.handleSubmit} >
-                    <div><input value={this.co} onChange={this.handleChangeCO} type="text"  name="co" id="newForm1" /></div>
                     <div>
-                    <select className="custom-select custom-select-lg" onClick={this.show2} multiple={topic.mul2} value="" onChange={this.handleChangeCO} disabled type="text" name="pos" id="newForm2">
+                        <h2><p>New CO</p></h2>
+                    </div>
+                    <div><input className="addInput"  value={this.co} onChange={this.handleChangeCO} type="text"  name="co" id="newForm1" /></div>
+                    
+                    <div className="col-md-12">
+                    <select className="form-select"   value={topic.pos} multiple onChange={this.handleChangeCO} type="text" name="pos" id="newForm2">
                     <option value="" disabled >Choose POs</option>
                     {POs.map(course=>
                         <option key={course.uid} value={course.uid} id="anjum"> {course.name} </option>
                     )}
                     </select>
                     </div> 
-                    <div><button onClick={this.handleAdd}>+</button></div>
+                    <div><button className="signin" onClick={this.handleAdd}>+</button></div>
                     </form>
-                    <div><button onClick={this.handleSubmit}>Submit</button></div>
+                    <div><button className="signin" onClick={this.handleSubmit}>Submit</button></div>
                 </div>
             </div>
           );

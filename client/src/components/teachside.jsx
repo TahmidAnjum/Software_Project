@@ -30,6 +30,7 @@ class teachside extends Component {
         const gg = localStorage.getItem("anjum");
         ////console.log('teacher',jwtDecode(gg));
         const pp = jwtDecode(gg);
+        
         (async()=>{
               let {data : courses} = await axios.post("http://localhost:5000/teacher/"+pp.name,pp);
               this.setState({courses});
@@ -67,9 +68,9 @@ class teachside extends Component {
               let {data : courses} = await axios.post("http://localhost:5000/teacher/"+pp.name,pp);
               this.setState({courses});
               const jwt = sign(courses,secret);
-              localStorage.setItem("Courses",jwt);
+              await localStorage.setItem("Courses",jwt);
               const jwt1 = sign("deltopics",secret);
-              localStorage.setItem("Option",jwt1);
+              await localStorage.setItem("Option",jwt1);
               //console.log(jwt1);
               this.props.history.push("/teacher/"+pp.name+"/seetopics");
           })().catch((e)=>{console.log(e)});
@@ -140,12 +141,38 @@ class teachside extends Component {
       
       grade = () =>
       {
+        const gg = localStorage.getItem("anjum");
+        ////console.log('teacher',jwtDecode(gg));
+        const pp = jwtDecode(gg);
+        (async()=>{
+              let {data : courses} = await axios.post("http://localhost:5000/teacher/"+pp.name,pp);
+              this.setState({courses});
+              const jwt = sign(courses,secret);
+              localStorage.setItem("Courses",jwt);
+              const jwt1 = sign("viewgrades",secret);
+              localStorage.setItem("Option",jwt1);
+              //console.log(jwt1);
+              this.props.history.push("/teacher/"+pp.name+"/seetopics");
+          })().catch((e)=>{console.log(e)});
           
       }
   
   
       modQues = () =>
       {
+          const gg = localStorage.getItem("anjum");
+        ////console.log('teacher',jwtDecode(gg));
+        const pp = jwtDecode(gg);
+        (async()=>{
+              let {data : courses} = await axios.post("http://localhost:5000/modQues",pp);
+              this.setState({courses});
+              const jwt = sign(courses,secret);
+              localStorage.setItem("Courses",jwt);
+              const jwt1 = sign("moderateQuestion",secret);
+              localStorage.setItem("Option",jwt1);
+              //console.log(jwt1);
+              this.props.history.push("/teacher/"+pp.name+"/seetopics");
+          })().catch((e)=>{console.log(e)});
           //const gg = localStorage.getItem("anjum");
           ////console.log('teacher',jwtDecode(gg));
           //const pp = jwtDecode(gg);
@@ -153,9 +180,43 @@ class teachside extends Component {
           //const ff = jwtDecode(ee);
           //this.props.history.push("/teacher/"+pp.name+"/"+ff.title+"/"+ff.year+"/question");
       }
+      homepage = ()=>
+      {
+          const gg = localStorage.getItem("anjum");
+          ////console.log('teacher',jwtDecode(gg));
+          const pp = jwtDecode(gg);
+          localStorage.clear();
+          const jwt = sign(pp,secret);
+          localStorage.setItem("anjum",jwt);
+          this.props.history.push("/teacher/"+pp.name);
+      }
+
+      feedback = ()=>{
+        const gg = localStorage.getItem("anjum");
+        ////console.log('teacher',jwtDecode(gg));
+        const pp = jwtDecode(gg);
+        localStorage.clear();
+        const jwt = sign(pp,secret);
+        localStorage.setItem("anjum",jwt);
+        (async()=>{
+            const {data:feed} = await axios.post("http://localhost:5000/getfeed",pp);
+            console.log(feed);
+            const jwt = sign(feed,secret);
+            localStorage.setItem("feed",jwt);
+            this.props.history.push("/teacher/"+pp.name+"/feedback");
+        })();
+        
+        
+      }
+      logout = () =>
+      {
+          localStorage.clear();
+          this.props.history.push("/");
+      }
       render() { 
           return ( 
               <div className="TeachMas">
+                  <button className="TeachSide" onClick={this.homepage}>Home</button>
                   <button className="TeachSide" onClick={this.takeCour}>See Topics</button>
                   <button className="TeachSide" onClick={this.addTopic}>Add Topic</button>
                   <button className="TeachSide" onClick={this.delTopic}>Delete Topic</button>
@@ -163,6 +224,10 @@ class teachside extends Component {
                   <button className="TeachSide" onClick={this.modQues}>Moderate Question</button>
                   <button className="TeachSide" onClick={this.modCour}>Moderate Course</button>
                   <button className="TeachSide" onClick={this.grade}>Grade Answer</button>
+                  <button className="TeachSide" onClick={this.feedback}>FeedBack</button>
+                  <button className="TeachSide" onClick={this.feedback}>FeedBack(Course Moderator)</button>
+                  <button className="TeachSide" onClick={this.feedback}>FeedBack</button>
+                  <button className="TeachSide" onClick={this.logout}>Log out</button>
               </div>
            );
       }

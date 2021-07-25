@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Teachside from './teachside';
+import Profile from './profile';
 //import axios from 'axios';
 //import jwtDecode from 'jwt-decode';
 ////import { Link } from 'react-router-dom';
@@ -15,8 +16,9 @@ class Teacher extends Component {
     render()
     {
         return(
-            <div className="Teacher">
+            <div className="frap">
                 <Teachside history={this.props.history}/>
+                <Profile/>
             </div>
         )
     }

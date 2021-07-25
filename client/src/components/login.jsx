@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 //import { Link} from 'react-router-dom'
 import axios from 'axios';
 //import dumms from './dummies'
@@ -32,10 +33,11 @@ class Login extends Component {
         e.preventDefault();
         //console.log(this.state.account);
         (async()=>{
+            
             //const st = ['anjum' ,'14'];
             const {status,data} = await axios.post("http://localhost:5000/login", this.state.account);
             //var path = {...this.state.path};
-            if(status!==404) 
+            if(status===201) 
             {   console.log("login",data);
                 const jwt = sign(data,secret);
                 localStorage.setItem("anjum",jwt);
@@ -56,7 +58,9 @@ class Login extends Component {
                 localStorage.setItem("role",enRole);
             }
             else{
-                this.props.history.push('/')
+                //this.props.history.push('/');
+                //console.log("Meh")
+                window.alert(data.msg);
             }
             //this.setState({path});
         })().catch((e)=>{console.log(e)});;
@@ -64,16 +68,19 @@ class Login extends Component {
 
     render() { 
         const {account} = this.state;
+        console.log(localStorage);
         return (
             <div className="login">
                 <h2 className="active"> sign in </h2>
                 <form action="" onSubmit={this.handleSubmit}>
                     <div>
-                        <input className="text" value={account.email} onChange={this.handleChange} type="text" name="email" id="" />
+                        <p> Student ID(student)/E-mail(teacher)</p>
+                        <input className="text" value={account.email} onChange={this.handleChange} type="text" name="email" />
                     </div>
-                    
+                    <br />
                     <div>
-                        <input className="text" value={account.password} onChange={this.handleChange} type="password" name="password" id="" />
+                        <p> Password</p>
+                        <input className="text" value={account.password} onChange={this.handleChange} type="password" name="password"  />
                     </div>
                     <div>
                         <button className="signin" onClick={this.handleSubmit}>

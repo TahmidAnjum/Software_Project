@@ -6,10 +6,7 @@ class Problems extends Component {
     render() { 
         return ( 
             <div>
-                <span>{this.props.problem.Description}</span>
-                <div>
-                    <prb/>
-                </div>
+                <span>{this.props.problem.numinQ} {this.props.problem.num} {this.props.problem.Description}</span>
             </div>
          );
     }

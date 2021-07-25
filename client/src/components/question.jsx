@@ -10,7 +10,9 @@ class Question extends Component {
 
     componentDidMount() {
         (async()=>{
-            let {data : problems} = await axios.get("http://localhost:5000/setQ");
+            const crs = {uid : 17};
+            let {data} = await axios.post("http://localhost:5000/getQues",crs);
+            const problems = data.Problems;
             this.setState({problems})
         })().catch((e)=>{console.log(e)});;
         

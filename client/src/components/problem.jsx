@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import Teachside from './teachside';
 
 const sign = require('jwt-encode');
 const secret = 'secret';
@@ -169,31 +170,35 @@ class Problem extends Component {
         const tkn = localStorage.getItem("Course");
         const crs = jwtDecode(tkn);
         return (
-            <div>
+            <div className='frap'>
+                <Teachside history={this.props.history}/>
+                <div className="prbst">
                 <div>
-                    <p>Course Title : {crs.title}</p>
+                    <h1><p>Course Title : {crs.title}</p></h1>
                 </div>
                 
                 <div>
-                    <p>Name : {crs.name}</p>
+                    <h1><p>Name : {crs.name}</p></h1>
                 </div>
                 
                 <div>
-                    <p>Year : {crs.year}</p>
+                    <h1><p>Year : {crs.year}</p></h1>
                 </div>
                 
 
                 <form action="" onSubmit={this.handleSubmit}>
-                    <div>
-                        <select className="custom-select"  onChange={this.handleChange}/*{(e)=>{const section_no= e.target.value;this.setState({section_no}); }}*/ type="text" name="Section" id="">
+                    <div className="col-md-12">
+                        <h3><p>Section:</p></h3>
+                        <select className="form-select1" onChange={this.handleChange}/*{(e)=>{const section_no= e.target.value;this.setState({section_no}); }}*/ type="text" name="Section">
                         <option>Choose Section</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                         </select>
                     </div>
                     
-                    <div>
-                    <select className="custom-select"  onChange={this.handleChange} type="text" name="question_no" id="" >
+                    <div className="col-md-12">
+                    <h3><p>Question No.:</p></h3>
+                    <select className="form-select1"  onChange={this.handleChange} type="text" name="question_no"  >
                         <option>Select Quse. No</option>
                         {this.state.problem.qAr.map(course=>
                         <option key={course.value} value={course.value}> {course.value} </option>
@@ -206,7 +211,8 @@ class Problem extends Component {
                         <p></p>
                     </div>
                     <div>
-                        <select className="custom-select"  onChange={this.handleChange} type="text" name="problem_no" id="" >
+                    <h3><p>Problem No. :</p></h3>
+                        <select className="form-select1"  onChange={this.handleChange} type="text" name="problem_no" id="" >
                         <option>Select Prob No</option>
                         {this.state.problem.pAr.map(course=>
                         <option key={course.val} value={course.val}> {course.val} </option>
@@ -217,14 +223,15 @@ class Problem extends Component {
                     <div>
                         <p>Details</p>
                     </div>
-                    <div><input value={problem.spec} onChange={this.handleChange} type="text" name="spec" id="" /></div>
+                    <div><input className="input_1" value={problem.spec} onChange={this.handleChange} type="text" name="spec" id="" /></div>
                     <div>
                         <p>Marks</p>
                     </div>
-                    <div><input value={problem.marks} onChange={this.handleChange} type="text" name="marks" id="" /></div>
-                    <div><button onClick={this.handleSubmit}>Submit</button></div>
+                    <div><input className="input_1" value={problem.marks} onChange={this.handleChange} type="text" name="marks" id="" /></div>
+                    <div><button className="signin" onClick={this.handleSubmit}>Submit</button></div>
                 </form>
                 
+            </div>
             </div>
           );
         }

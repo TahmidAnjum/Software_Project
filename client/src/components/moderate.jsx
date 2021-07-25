@@ -2,6 +2,7 @@ import jwtDecode from 'jwt-decode';
 import React, { Component } from 'react'
 import axios from 'axios';
 import sign from 'jwt-encode';
+import Teachside from './teachside';
 const secret = 'secret';
 class modeCour extends Component {
     state = { 
@@ -11,9 +12,12 @@ class modeCour extends Component {
 
     componentWillUnmount()
     {
-        if((localStorage.getItem("addTops") && jwtDecode(localStorage.getItem("addTops")))!==null)localStorage.removeItem("addTops");
-        if((localStorage.getItem("delTops") && jwtDecode(localStorage.getItem("delTops")))===null)localStorage.removeItem("delTops");
-        //console.log("moderate unmout");
+        //if((localStorage.getItem("addTops") && jwtDecode(localStorage.getItem("addTops")))!==null)localStorage.removeItem("addTops");
+        //if((localStorage.getItem("delTops") && jwtDecode(localStorage.getItem("delTops")))===null)localStorage.removeItem("delTops");
+        //const prof = localStorage.getItem("anjum");
+        //localStorage.clear();
+        //localStorage.setItem("anjum",prof);
+        //console.log("moderate unmout",localStorage);
     }
 
     approveAdd = c =>{
@@ -59,7 +63,21 @@ class modeCour extends Component {
     }
 
     rejectAdd = c =>{
-
+        (async()=>{
+            let {data : topics} = await axios.post("http://localhost:5000/rejadd",c);
+            //this.setState({topics})
+            console.log(topics);
+            let addTops = [...this.state.addTops];
+            const arr = addTops.filter(top=>top.uid!==c.uid);
+            addTops = arr;
+            this.setState({addTops});
+            if(addTops.length>0)
+            {
+                const jwt = sign(addTops,secret);
+                localStorage.setItem("addTops",jwt);
+            }
+            else localStorage.removeItem("addTops");
+        })().catch((e)=>{console.log(e)});;
         //console.log("Bin");
     }
 
@@ -95,29 +113,44 @@ class modeCour extends Component {
         const getAdd = this.getSz(addTops); 
         const getDel = this.getSz(delTops); 
         return (
-            <div> 
+            <div className='frap'> 
+                <Teachside history={this.props.history}/>
                 <div>
-                <div>Delete Topic Requests {getDel}</div>
-                <div className="gg1">
-                <div hidden={getDel}>This section is empty</div>
-                <div hidden={!getDel} >
-                {delTops.map(course=> 
+                    <div><h1>Delete Topic Requests {getDel}</h1></div>
+                    <div className="gg1">
+                        <div hidden={getDel}>This section is empty</div>
+                        <div hidden={!getDel} >
+                            {delTops.map(course=> 
+                    
+                            <div key={course.uid} > 
+                                <h2>-{course.name} <button onClick={()=>{this.approveDel(course)}}>+</button><button onClick={()=>{this.rejectDel(course)}}>-</button></h2>
+                            </div>)}
+                        </div>
+                    </div>
                 
-                <div key={course.uid} > 
-                   <h2>-{course.name} <button onClick={()=>{this.approveDel(course)}}>+</button><button onClick={()=>{this.rejectDel(course)}}>-</button></h2>
-                </div>)}
-                </div>
-                </div>
-                </div>
-                <div>Add Topic Requests {getAdd}</div>
-                <div className="gg2">
-                <div hidden={getAdd}>This section is empty</div>
-                <div hidden={!getAdd}>
-                {addTops.map(course=> 
-                <div key={course.uid} > 
-                    <h2>-{course.name}</h2> <button onClick={()=>{this.approveAdd(course)}}>+</button><button onClick={()=>{this.rejectAdd(course)}}>-</button>
-                </div>)}
-                </div>
+                    <div><h1>Add Topic Requests {getAdd}</h1></div>
+                    <div className="gg2">
+                        <div hidden={getAdd}>This section is empty</div>
+                        <div hidden={!getAdd}>
+                            {addTops.map(course=> 
+                            <div key={course.uid} > 
+                                <h2>-{course.name}</h2> <ol type='a'> <br />
+                        {course.COs.map(co=>
+                        <li>
+                            
+                                    <i>{co.name}</i> <ol type='i'> {co.POs.map(po=>
+                                    
+                                <li >
+                                        {po.name}
+                                </li>
+                            )}<br /></ol>
+                            
+                        </li> 
+                           
+                        )} <br /> </ol> <button onClick={()=>{this.approveAdd(course)}}>+</button><button onClick={()=>{this.rejectAdd(course)}}>-</button>
+                            </div>)}
+                        </div>
+                    </div>
                 </div>
             </div>
          );
