@@ -151,7 +151,7 @@ class Problem extends Component {
         const pp = jwtDecode(gg);
         const ee = localStorage.getItem("Course");
         const ff = jwtDecode(ee);
-        this.props.history.push("/teacher/"+pp.name+"/"+ff.title+"/"+ff.year);
+        this.props.history.push("/teacher/"+pp.name+"/"+ff.title+"/"+ff.year+"/seetopics");
         localStorage.removeItem('Question');
         localStorage.removeItem('Problem');
         console.log(this.state.problem);

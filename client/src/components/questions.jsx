@@ -61,18 +61,15 @@ class Questions extends Component {
     }
     render() { 
         //this.setProb();
-        const {Question,show,Feed} = this.state;
+        const {show,Feed} = this.state;
         console.log("Des",Feed.Description);
         const Problems = this.getProb();
         console.log("Render Ques",Problems);
-        const bol = this.getSz(Question);
+        //const bol = this.getSz(Question);
         return (  
             <div className="frap">
                 <Teachside history={this.props.history}/>
                 <div className = "ModerQ">
-                    <div hidden={bol}><p>This section is empty</p></div>
-                    <div hidden={!bol} >
-                        <div>
                         <table>
                             <thead>
                                 <tr>
@@ -91,9 +88,7 @@ class Questions extends Component {
                                 </tr>)}
                             </tbody>
                         </table>
-                        </div>
-                        <br />
-                        <br />
+
                         <div>
                             <h2><p>Do you propose any changes?</p></h2>
                             <div>
@@ -114,7 +109,6 @@ class Questions extends Component {
                             </div>
                         </div>
                     </div> 
-                </div>
             </div>
         );
     }

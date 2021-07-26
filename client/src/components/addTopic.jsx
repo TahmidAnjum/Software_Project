@@ -102,7 +102,11 @@ class addTop extends Component {
         const crs = jwtDecode(localStorage.getItem("Course"));
         const topic = {...this.state.topic};
         
-        
+        if(topic['pos'].length===0||topic['co']==='')
+        {
+            window.alert('Incomplete data set for CO');
+            return;
+        }
         (async ()=>{
             
             const req = {name :topic['co']+"_"+crs.title, flag : 0, pos : topic['pos']}
@@ -145,6 +149,11 @@ class addTop extends Component {
        //this.props.history.push("/teacher/"+pp.name+"/"+ff.title+"/"+ff.year);
        //localStorage.removeItem('Question');
        //localStorage.removeItem('topic');
+       if(topic['cos'].length===0||topic.name==='')
+       {
+           window.alert('Incomplete data set for topic');
+           return;
+       }
        console.log(this.state.topic);
        //console.log(this.state.account);
        (async()=>{
@@ -157,7 +166,11 @@ class addTop extends Component {
        })().catch((e)=>{console.log(e)});;
     }
 
-
+    back = e =>
+    {
+        const pp = this.getUser();
+        this.props.history.push("/teacher/"+pp.name+"/seetopics");
+    }
     render() {
         //const tch = jwtDecode(localStorage.getItem("Anjum"));
         console.log("render");
@@ -219,9 +232,9 @@ class addTop extends Component {
                     )}
                     </select>
                     </div> 
-                    <div><button className="signin" onClick={this.handleAdd}>+</button></div>
+                    <div><button className="signin2" onClick={this.handleAdd}>+</button></div>
                     </form>
-                    <div><button className="signin" onClick={this.handleSubmit}>Submit</button></div>
+                    <div><button className="signin2" onClick={this.handleSubmit}>Submit</button><button className="signin3" onClick={this.back}>Back</button></div>
                 </div>
             </div>
           );

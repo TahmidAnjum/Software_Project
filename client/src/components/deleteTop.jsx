@@ -35,7 +35,11 @@ class delTop extends Component {
     handleSubmit = e =>
     {
         const topics = {...this.state.topics};
-        
+        if (topics['uids'].length===0)
+        {
+            window.alert('Incomplete data set for topic');
+            return;
+        }
         const tpcToken = localStorage.getItem("anjum");
         const pp = jwtDecode(tpcToken);
         (async()=>{
@@ -108,7 +112,7 @@ class delTop extends Component {
                         
                             
                         </form>
-                        <div><button className="signin" onClick={this.handleSubmit}>delete</button></div>
+                        <div><button className="signin2" onClick={this.handleSubmit}>Submit</button><button className="signin3" onClick={this.back}>Back</button></div>
                     </div>
                </div>
             </div>
