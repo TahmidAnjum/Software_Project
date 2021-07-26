@@ -15,6 +15,11 @@ class Student extends Component {
        const pp = jwtDecode(gg);
         (async ()=>{
             const {data} = await axios.post("http://localhost:5000/stdcourses", pp);
+            console.log(data);
+            data.sort((a,b)=>{
+                return b.title-a.title
+            });
+            console.log(data)
             //console.log(data);
             const tt = sign(data,secret);
             await localStorage.setItem("Courses",tt);
