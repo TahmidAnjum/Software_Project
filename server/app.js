@@ -182,7 +182,6 @@ app.post('/stdcourses',(req,res)=>{
           const crs = await Course.findByPk(tab[i].CourseUid); 
           courses.push(crs);
       }
-      courses.sort()
       res.send(courses);
     })();
   })();
@@ -997,9 +996,6 @@ app.post('/crsstd',(req,res)=>
         }
       }
     });
-    crs.sort((a,b)=>{
-      b.year-a.year
-    })
     res.send(crs)
   })();
 })
